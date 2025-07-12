@@ -11,7 +11,8 @@ class ColorizationDataset(Dataset):
         root_dir: pasta onde estão as imagens coloridas (jpg, png, etc.)
         """
         self.root_dir = root_dir
-        self.image_files = [f for f in os.listdir(root_dir) if f.endswith(('.jpg', '.png', '.jpeg'))]
+        self.image_files = [f for f in os.listdir(root_dir) if f.lower().endswith(('.jpg', '.png', '.jpeg'))]
+
 
     def __len__(self):
         # Quantidade total de imagens no dataset

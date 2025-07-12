@@ -29,11 +29,14 @@ criterion = ColorizationLoss()
 
 for epoch in range(num_epochs):
  total_loss = 0
+ print(f"\nComeçando época {epoch+1}/{num_epochs}...")
 
- for batch in train_loader:
+ for i, batch in enumerate(train_loader):
+  print(f"  Rodando batch {i+1}/{len(train_loader)}...")
+
   # pega o canal L e os canais ab do batch
-  L = torch.tensor(batch['L']).float().to(device)        # (B,1,H,W)
-  ab = torch.tensor(batch['ab']).float().to(device)     # (B,2,H,W)
+  L = batch['L'].float().to(device)        # (B,1,H,W)
+  ab = batch['ab'].float().to(device)     # (B,2,H,W)
 
   # transforma ab em índices de classe (0 a 312)
   target = ab_to_class(ab.cpu().numpy())
