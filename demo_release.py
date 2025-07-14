@@ -16,7 +16,7 @@ args = parser.parse_args()
 
 # carrega o modelo
 model = ColorizationNet()
-model.load_state_dict(torch.load('checkpoint_epoch_5.pth', map_location='cpu'))
+model.load_state_dict(torch.load('checkpoint_epoch_3.pth', map_location='cpu', weights_only=True))
 model.eval()
 
 # lê imagem de entrada
