@@ -16,7 +16,7 @@ args = parser.parse_args()
 
 # carrega o modelo
 model = ColorizationNet()
-model.load_state_dict(torch.load('checkpoint_epoch_3.pth', map_location='cpu', weights_only=True))
+model.load_state_dict(torch.load('checkpoint_epoch_3.pth', map_location='cpu'))
 model.eval()
 
 # lê imagem de entrada
@@ -31,14 +31,15 @@ L_tensor = torch.from_numpy(L).unsqueeze(0).unsqueeze(0).float()
 
 # passa pelo modelo pra prever as cores
 with torch.no_grad():
- output = model(L_tensor)  # (1,313,H,W)
- pred_ab = decode_ab(output)  # transforma saída em ab contínuo
+    output = model(L_tensor)
+    print("Output stats:", output.shape, output.min().item(), output.max().item())
+    pred_ab = decode_ab(output)
+    print("Pred_ab stats:", pred_ab.min(), pred_ab.max())
 
 # monta imagem final (junta L com ab)
-L_out = (L + 1.0) * 50.0  # volta pro range original
-result_lab = np.zeros((256,256,3))
-result_lab[:,:,0] = L_out[0]
-result_lab[:,:,1:] = pred_ab[0].transpose(1,2,0)
+result_lab = np.zeros((256,256,3), dtype=np.float32)
+result_lab[:,:,0] = (L + 1.0) * 50.0  # L em [0,100]
+result_lab[:,:,1:] = pred_ab[0].transpose(1,2,0)  # ab em [-128,127]
 
 # converte de Lab pra RGB e salva
 result_rgb = cv2.cvtColor(result_lab.astype("uint8"), cv2.COLOR_LAB2RGB)
